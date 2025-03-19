@@ -104,4 +104,5 @@ void HEX_PS2(char previous, char current) {
     // Update HEX displays
     *HEX3_HEX0_ptr = *(int *)hex_segs; // Display previous and current on HEX3-0
     *HEX5_HEX4_ptr = 0; // Turn off HEX5-4
+    // hello 
 }
