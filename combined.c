@@ -171,11 +171,23 @@ int main(void) {
                         if (digit_count == 2) {
                             entered_current = digit_buffer[0] * 10 + digit_buffer[1];
                         }
+
+                        // Get previous current value for this device
+                        int previous_current = currents[selected_device];
+                        
+                        // Update device count only when transitioning between 0/non-zero
+                        if (previous_current == 0 && entered_current != 0) {
+                            if (total_devices < 9) total_devices++;
+                        } 
+                        else if (previous_current != 0 && entered_current == 0) {
+                            if (total_devices > 0) total_devices--;
+                        }
+
+                        printf("num devices: %d\n", total_devices);
+
                         currents[selected_device] = entered_current;
                         input_mode = 0;
-                        if (total_devices < 9){
-                            total_devices++;
-                        }
+                        
                         // Display saved current
                         update_display(selected_device, entered_current/10, entered_current%10);
                     }
@@ -242,11 +254,22 @@ int main(void) {
                         if (digit_count == 2) {
                             entered_current = digit_buffer[0] * 10 + digit_buffer[1];
                         }
+
+                        // Get previous current value for this device
+                        int previous_current = currents[selected_device];
+                        
+                        // Update device count only when transitioning between 0/non-zero
+                        if (previous_current == 0 && entered_current != 0) {
+                            if (total_devices < 9) total_devices++;
+                        } 
+                        else if (previous_current != 0 && entered_current == 0) {
+                            if (total_devices > 0) total_devices--;
+                        }
+
+                        printf("num devices: %d\n", total_devices);
+
                         currents[selected_device] = entered_current;
                         input_mode = 0;
-                        if (total_devices < 9){
-                            total_devices++;
-                        }
                         
                         // Display saved current
                         update_display(selected_device, entered_current/10, entered_current%10);
@@ -314,10 +337,22 @@ int main(void) {
                         if (digit_count == 2) {
                             entered_current = digit_buffer[0] * 10 + digit_buffer[1];
                         }
-                        currents[selected_device] = entered_current;
-                        if (total_devices < 9){
-                            total_devices++;
+
+                        // Get previous current value for this device
+                        int previous_current = currents[selected_device];
+                        
+                        // Update device count only when transitioning between 0/non-zero
+                        if (previous_current == 0 && entered_current != 0) {
+                            if (total_devices < 9) total_devices++;
+                        } 
+                        else if (previous_current != 0 && entered_current == 0) {
+                            if (total_devices > 0) total_devices--;
                         }
+
+                        printf("num devices: %d\n", total_devices);
+
+                        currents[selected_device] = entered_current;
+                        
                         input_mode = 0;
                         // Display saved current
                         update_display(selected_device, entered_current/10, entered_current%10);
@@ -369,7 +404,7 @@ int main(void) {
             }
         }
         */
-       
+
         // Update switch states
         for (int i = 0; i < 9; i++) {
             SW_on_off[i] = (*LEDR_ptr >> i) & 1;
@@ -391,6 +426,18 @@ int main(void) {
 
         for (int i = 0; i < 9; i++){
             totalPower += power[i];
+        }
+        
+       totalPower = 0;
+        for (int i = 0; i < 9; i++) {
+            int voltage;
+            if (i < 3) voltage = 120;
+            else if (i < 6) voltage = 220;
+            else voltage = 240;
+            
+            power[i] = currents[i] * voltage * SW_on_off[i];
+            totalPower += power[i];
+        }
         */
     }
 }
