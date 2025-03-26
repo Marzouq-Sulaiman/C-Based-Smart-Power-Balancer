@@ -68,12 +68,20 @@ volatile PowerMode current_mode = {120, 0};  // Default to 120V mode
 void update_display(int device, char first, char second);
 char scan_code_to_number(char scan_code);
 
-// Global variables for device management
+// Global variables keyboard
 int currents[9] = {0};      // Stores current values for devices A, B, C
 int selected_device = 0;    // 0 for A, 1 for B, 2 for C and add 3 for future ones
 int input_mode = 0;         // 0: display saved value, 1: entering new value
 char digit_buffer[2] = {0}; // Buffer for entered digits
 int digit_count = 0;        // Number of digits entered
+
+// global variables for the switches
+int SW_on_off[9] = {0};     // stores the values for each of the switches (whether its on or off)
+int total_devices = 0;      // stores the number of devices currently connected to the power groups
+const char SW_codes[9] = {  // the bits needed to activate the said switches based on the number of devices connected
+    0x01, 0x03, 0x07, 0xF, 0x1F,  // 0-4
+    0x3F, 0x7F, 0xFF, 0x1FF   	// 5-9
+};
 
 /*******************************************************************************
  * Main program: Handles device selection and current input via PS/2 keyboard
@@ -83,6 +91,7 @@ int main(void) {
     This section will set up the interrupts used in the program
     */
    //--------------------------------------------------------------------------//
+    volatile int *SW_ptr = (int *) SW_BASE;
     volatile int *LEDR_ptr = (int *) LEDR_BASE;
     volatile int *HEX3_HEX0_ptr = (int *)HEX3_HEX0_BASE;
 
@@ -160,6 +169,9 @@ int main(void) {
                         }
                         currents[selected_device] = entered_current;
                         input_mode = 0;
+                        if (total_devices < 9){
+                            total_devices++;
+                        }
                         // Display saved current
                         update_display(selected_device, entered_current/10, entered_current%10);
                     }
@@ -169,7 +181,6 @@ int main(void) {
                     for (int i = 0; i < 9; i++){
                         printf("device %d: %d\n", i, currents[i]);
                     }
-
                 }
                 // Handle number keys
                 else {
@@ -228,6 +239,9 @@ int main(void) {
                         }
                         currents[selected_device] = entered_current;
                         input_mode = 0;
+                        if (total_devices < 9){
+                            total_devices++;
+                        }
                         // Display saved current
                         update_display(selected_device, entered_current/10, entered_current%10);
                     }
@@ -294,6 +308,9 @@ int main(void) {
                             entered_current = digit_buffer[0] * 10 + digit_buffer[1];
                         }
                         currents[selected_device] = entered_current;
+                        if (total_devices < 9){
+                            total_devices++;
+                        }
                         input_mode = 0;
                         // Display saved current
                         update_display(selected_device, entered_current/10, entered_current%10);
@@ -325,6 +342,16 @@ int main(void) {
                         }
                     }
                 }
+            }
+        }
+        // this section will focus on letting the user turn on and off the appliances
+        *LEDR_ptr = *SW_ptr & SW_codes[total_devices];
+
+        for (int i = 0; i < total_devices; i++){
+            if ((*LEDR_ptr >> i) & 1){
+                SW_on_off[i] = 1;
+            } else {
+                SW_on_off[i] = 0;
             }
         }
     }
