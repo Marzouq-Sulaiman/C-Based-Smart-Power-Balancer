@@ -57,7 +57,7 @@ char digit_buffer[2] = {0};
 int digit_count = 0;
 
 /*******************************************************************************
- * Main program: Collects up to 2 digits, saves on Enter press
+ * Main program: Collects up to 2 digits, saves on Enter press (the current)
  ******************************************************************************/
 int main(void) {
     volatile int *PS2_ptr = (int *)PS2_BASE;
