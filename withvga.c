@@ -414,6 +414,9 @@ int main(void) {
     while (1) {
 
         //START MERGED
+        if (currents){
+            
+        }
         if (residentialVoltage* (currents[0]*SW_on_off[0] + currents[1]*SW_on_off[1] + currents[2]*SW_on_off[2]) > residentialPowerLimit){
             draw_box(20, 25, 300, 140, 0xFFFF);
             drawText("MASTER CAUTION: Residential Power Limit Exceeded", 120, 120, 0x0000);
