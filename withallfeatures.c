@@ -46,6 +46,7 @@ enter a current value for the device, and save it by pressing Enter.
 
 
 #include <stdbool.h>
+#include <string.h>
 
 #endif
 
@@ -62,6 +63,10 @@ industrialVoltage = 440;
 double residentialPowerLimit = 1440;
 double commercialPowerLimit = 2400;
 double industrialPowerLimit = 6200;
+
+//variable to store previous current value writes to VGA screen, needed to prevent pixel overwriting
+
+char oldVals [9][3];
 
 void swap(int* one, int* two) {
     int temp = *one;
@@ -304,47 +309,72 @@ void updateDisplayedCurrent() {
         buffers[i][2] = '\0';                      
     }
 
-  //   if (received_byte == 0x1C){ //A
-  //     activeKEY = 
-  //   }
-  //   received_byte == 0x21 //C
-                   
-  // if (current_mode.mode_code == 0){
-  //     activeKEY = 0
-  // }
-
-
-
-    if (current_mode.mode_code == 0 == 0){
+    if (current_mode.mode_code == 0){
         if (selected_device == 0){
-            drawText(buffers[0], 70, 45, 0xFFFF);
+            if (strcmp(oldVals[0], buffers[0]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[0], 70, 45, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[0], buffers[0]);                 //store old value
+            drawText(buffers[0], 70, 45, 0xFFFF);           //draw new value
         }
         else if (selected_device == 1){
+            if (strcmp(oldVals[1], buffers[1]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[1], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[1], buffers[1]);                 //store old value
             drawText(buffers[1], 70, 95, 0xFFFF);
         }
         else if (selected_device == 2){
+            if (strcmp(oldVals[2], buffers[2]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[2], 70, 135, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[2], buffers[2]); 
             drawText(buffers[2], 70, 135, 0xFFFF);
         }
     }
     else if (current_mode.mode_code == 1){
         if (selected_device == 0){
+            if (strcmp(oldVals[3], buffers[3]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[3], 70, 170, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[3], buffers[3]); 
             drawText(buffers[3], 170, 45, 0xFFFF);
         }
         else if (selected_device == 1){
+            if (strcmp(oldVals[4], buffers[4]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[4], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[4], buffers[4]); 
             drawText(buffers[4], 170, 95, 0xFFFF);
         }
         else if (selected_device == 2){
+            if (strcmp(oldVals[5], buffers[5]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[5], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[5], buffers[5]); 
             drawText(buffers[5], 170, 135, 0xFFFF);
         }
     }
     else if (current_mode.mode_code == 2){
         if (selected_device == 0){
+            if (strcmp(oldVals[6], buffers[6]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[6], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[6], buffers[6]); 
             drawText(buffers[6], 270, 45, 0xFFFF);
         }
         else if (selected_device == 1){
+            if (strcmp(oldVals[7], buffers[7]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[7], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[7], buffers[7]); 
             drawText(buffers[7], 270, 95, 0xFFFF);
         }
         else if (selected_device == 2){
+            if (strcmp(oldVals[8], buffers[8]) != 0){       //remove this line if fails on de1 Soc due to string library usage
+                drawText(oldVals[8], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
+            }
+            strcpy(oldVals[8], buffers[8]); 
             drawText(buffers[8], 270, 135, 0xFFFF);
         }
     }
@@ -719,6 +749,8 @@ int main(void) {
         } else {
             drawText("ON", 100, 100, 0x0000);  // Overwrite "ON" with black
         }
+
+    updateDisplayedCurrent();
     }
 }
 
