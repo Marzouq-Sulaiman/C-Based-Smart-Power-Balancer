@@ -56,7 +56,7 @@ enter a current value for the device, and save it by pressing Enter.
 int pixel_buffer_start;
 int activeKEY;
 
-residentialVoltage = 110;
+residentialVoltage = 120;
 commercialVoltage = 220;
 industrialVoltage = 440;
 
@@ -66,7 +66,8 @@ double industrialPowerLimit = 6200;
 
 //variable to store previous current value writes to VGA screen, needed to prevent pixel overwriting
 
-char oldVals [9][3];
+//char oldVals [9][3];
+char oldVals[9][3] = {0};  // Zero-initialize
 
 void swap(int* one, int* two) {
     int temp = *one;
@@ -240,7 +241,7 @@ void swap(int* one, int* two) {
     draw_box(220, 25, 80, 140, 0xF81F);
   
     // drawText();
-    drawText("110V", 48, 15, 0xFFFF);
+    drawText("120V", 48, 15, 0xFFFF);
     drawText("220V", 148, 15, 0xFFFF);
     drawText("440V", 248, 15, 0xFFFF);
   }
@@ -457,36 +458,61 @@ void updateDisplayedCurrent() {
             }
 }
 
-void updateDisplayedPavg(){
+// void updateDisplayedPavg(){
 
-    double residentialAvgPowDraw = ((currents[0] + currents[1] + currents[2]) * 110) / 3;
-    double commercialAvgPowDraw = ((currents[3] + currents[4] + currents[5]) * 220) / 3;
-    double industrialAvgPowDraw = ((currents[6] + currents[7] + currents[8]) * 440) / 3;
+//     int residentialAvgPowDraw = ((currents[0] + currents[1] + currents[2]) * 110) / 3;
+//     int commercialAvgPowDraw = ((currents[3] + currents[4] + currents[5]) * 220) / 3;
+//     int industrialAvgPowDraw = ((currents[6] + currents[7] + currents[8]) * 440) / 3;
 
-    double avgPowerValues [3] = {residentialAvgPowDraw, commercialAvgPowDraw, industrialAvgPowDraw};  
+//     int avgPowerValues [3] = {residentialAvgPowDraw, commercialAvgPowDraw, industrialAvgPowDraw};  
 
-    char powerValBuffer[3][4];  
+//     char powerValBuffer[3][4];  
 
-    // for (int i = 0; i < 3; i++) {
-    //     powerValBuffer[i][0] = ((int)avgPowerValues[i] / 10) + '0'; 
-    //     powerValBuffer[i][1] = ((int)avgPowerValues[i] % 10) + '0'; 
-    //     powerValBuffer[i][2] = '\0';                      
-    // }
+//     // for (int i = 0; i < 3; i++) {
+//     //     powerValBuffer[i][0] = ((int)avgPowerValues[i] / 10) + '0'; 
+//     //     powerValBuffer[i][1] = ((int)avgPowerValues[i] % 10) + '0'; 
+//     //     powerValBuffer[i][2] = '\0';                      
+//     // }
+
+//     for (int i = 0; i < 3; i++) {
+//         int value = avgPowerValues[i];
+
+//          if (value < 0) value = 0;
+//          if (value > 999) value = 999;
+
+//         powerValBuffer[i][0] = (value / 100) + '0';         
+//         powerValBuffer[i][1] = ((value / 10) % 10) + '0';  
+//         powerValBuffer[i][2] = (value % 10) + '0';         
+//         powerValBuffer[i][3] = '\0';                       
+//     }
+
+//     drawText("Average Power Draw (W)", 20, 350, 0xFFFF);
+//     drawText(powerValBuffer[0], 55, 350, 0xFFFF);
+// }
+
+void updateDisplayedPavg() {
+    // Use integer arithmetic to avoid FPU issues
+    int residentialAvgPowDraw = ((currents[0] + currents[1] + currents[2]) * 110) / 3;
+    int commercialAvgPowDraw  = ((currents[3] + currents[4] + currents[5]) * 220) / 3;
+    int industrialAvgPowDraw  = ((currents[6] + currents[7] + currents[8]) * 440) / 3;
+
+    int avgPowerValues[3] = {residentialAvgPowDraw, commercialAvgPowDraw, industrialAvgPowDraw};
+    char powerValBuffer[3][4] = {0};  // Zero-initialize
 
     for (int i = 0; i < 3; i++) {
-        int value = (int) avgPowerValues[i];
+        // Clamp values to 0-999
+        if (avgPowerValues[i] < 0) avgPowerValues[i] = 0;
+        if (avgPowerValues[i] > 999) avgPowerValues[i] = 999;
 
-         if (value < 0) value = 0;
-         if (value > 999) value = 999;
-
-        powerValBuffer[i][0] = (value / 100) + '0';         
-        powerValBuffer[i][1] = ((value / 10) % 10) + '0';  
-        powerValBuffer[i][2] = (value % 10) + '0';         
-        powerValBuffer[i][3] = '\0';                       
+        // Convert to string
+        powerValBuffer[i][0] = (avgPowerValues[i] / 100) + '0';
+        powerValBuffer[i][1] = ((avgPowerValues[i] / 10) % 10) + '0';
+        powerValBuffer[i][2] = (avgPowerValues[i] % 10) + '0';
+        powerValBuffer[i][3] = '\0';  // Null-terminate
     }
 
     drawText("Average Power Draw (W)", 20, 350, 0xFFFF);
-    drawText(powerValBuffer[0], 55, 350, 0xFFFF);
+    drawText(powerValBuffer[0], 55, 350, 0xFFFF);  // Display residential avg
 }
 
 
