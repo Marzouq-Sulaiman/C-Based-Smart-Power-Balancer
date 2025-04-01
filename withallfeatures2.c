@@ -877,7 +877,7 @@ int main(void) {
         
         // Set LED only if both switch is ON and current is non-zero
         if (switch_state && (currents[i] != 0)) {
-            led_value |= (1 << i);  // Set corresponding LED bit
+            led_value |= (1 << (i+1));  // Set corresponding LED bit
         }
     }
     
