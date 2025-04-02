@@ -78,6 +78,7 @@ double industrialPowerLimit = 6200;
 //variable to store previous current value writes to VGA screen, needed to prevent pixel overwriting
 
 char oldVals [9][3];
+char oldPowerVals[3][4];
 
 void swap(int* one, int* two) {
     int temp = *one;
@@ -479,39 +480,51 @@ void updateDisplayedCurrent() {
 }
 
 
-
-void updateDisplayedPavg(){
-
-    double residentialAvgPowDraw = ((currents[0] + currents[1] + currents[2]) * 110) / 3;
-    double commercialAvgPowDraw = ((currents[3] + currents[4] + currents[5]) * 220) / 3;
-    double industrialAvgPowDraw = ((currents[6] + currents[7] + currents[8]) * 440) / 3;
-
-    double avgPowerValues [3] = {residentialAvgPowDraw, commercialAvgPowDraw, industrialAvgPowDraw};  
-
-    char powerValBuffer[3][4];  
-
-    // for (int i = 0; i < 3; i++) {
-    //     powerValBuffer[i][0] = ((int)avgPowerValues[i] / 10) + '0'; 
-    //     powerValBuffer[i][1] = ((int)avgPowerValues[i] % 10) + '0'; 
-    //     powerValBuffer[i][2] = '\0';                      
-    // }
-
-    for (int i = 0; i < 3; i++) {
-        int value = (int) avgPowerValues[i];
-
-         if (value < 0) value = 0;
-         if (value > 999) value = 999;
-
-        powerValBuffer[i][0] = (value / 100) + '0';         
-        powerValBuffer[i][1] = ((value / 10) % 10) + '0';  
-        powerValBuffer[i][2] = (value % 10) + '0';         
-        powerValBuffer[i][3] = '\0';                       
+void updateDisplayedPavg() {
+   
+    //holds Pavg for each power group    
+    int powers [3] = {((currents[0] + currents[1] + currents[2])* 120) / 3, ((currents[3] + currents[4] + currents[5]) * 120) / 3, ((currents[6] + currents[7] + currents[8]) * 120) / 3};
+    
+        char powerBuffers[3][4];          
+    
+        for (int i = 0; i < 3; i++) {
+            int val = powers[i];
+            if (val < 0) val = 0;
+            if (val > 999) val = 999;
+    
+            powerBuffers[i][0] = (val / 100) + '0';
+            powerBuffers[i][1] = ((val / 10) % 10) + '0';
+            powerBuffers[i][2] = (val % 10) + '0';
+            powerBuffers[i][3] = '\0';
+        }
+    
+            if (strcmp(oldPowerVals[0], powerBuffers[0]) != 0) {
+                drawText(oldPowerVals[0], 40, 210, 0x0000);         // erase old
+                strcpy(oldPowerVals[0], powerBuffers[0]);       // update memory
+                drawText("Residential", 20, 170, 0xFFFF);
+                drawText("Avg Power", 20, 180, 0xFFFF);
+                drawText("Draw", 20, 190, 0xFFFF);
+                drawText(powerBuffers[0], 40, 210, 0xFFFF);         // draw new
+            }
+    
+            if (strcmp(oldPowerVals[1], powerBuffers[1]) != 0) {
+                drawText(oldPowerVals[1], 40, 210, 0x0000);         // erase old
+                strcpy(oldPowerVals[1], powerBuffers[1]);       // update memory
+                drawText("Commercial", 120, 170, 0xFFFF);
+                drawText("Avg Power", 120, 180, 0xFFFF);
+                drawText("Draw", 120, 190, 0xFFFF);
+                drawText(powerBuffers[1], 140, 210, 0xFFFF);         // draw new
+            }
+    
+            if (strcmp(oldPowerVals[2], powerBuffers[2]) != 0) {
+                drawText(oldPowerVals[2], 240, 210, 0x0000);         // erase old
+                strcpy(oldPowerVals[2], powerBuffers[2]);       // update memory
+                drawText("Residential", 220, 170, 0xFFFF);
+                drawText("Avg Power", 220, 180, 0xFFFF);
+                drawText("Draw", 220, 190, 0xFFFF);
+                drawText(powerBuffers[2], 240, 210, 0xFFFF);         // draw new
+            }
     }
-
-    drawText("Average Power Draw (W)", 20, 350, 0xFFFF);
-    drawText(powerValBuffer[0], 55, 350, 0xFFFF);
-}
-
 
 
 /*******************************************************************************
@@ -927,7 +940,7 @@ int main(void) {
         }
 
     updateDisplayedCurrent();
-    //updateDisplayedPavg();
+    updateDisplayedPavg();
 
     // this part should map the switches to the LEDs properly and set the sw_on_off
     int sw_value = (*SW_ptr >> 1) & 0x3FF;  // Original mask preserved

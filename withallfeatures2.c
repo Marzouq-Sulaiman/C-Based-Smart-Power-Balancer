@@ -511,7 +511,7 @@ int main(void) {
 
     while (1) {
 
-        
+        setupVGA();
         //START MERGED
         if (currents){
             
@@ -821,7 +821,7 @@ int main(void) {
         }
 
     updateDisplayedCurrent();
-    //updateDisplayedPavg();
+    updateDisplayedPavg();
 
     // this part should map the switches to the LEDs properly and set the sw_on_off
     int sw_value = (*SW_ptr >> 1) & 0x3FF;  // Original mask preserved
