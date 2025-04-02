@@ -1464,7 +1464,7 @@ void updateDisplayedCost() {
     buffer[6] = '\0';
 
     drawText("Cost: $", 120, 230, 0xFFE0); 
-    draw_box(160,220,40,10,0x0000);
+    draw_box(160,230,40,10,0x0000);
     drawText(buffer, 165, 230, 0xFFE0);
 }
 
