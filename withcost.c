@@ -1154,7 +1154,7 @@ void swap(int* one, int* two) {
   }
   
   void drawChar(int x, int y, char presentChar, short int color) {
-    char fontMap[63][7] = {
+    char fontMap[65][7] = {
   
         {0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001},  // A
         {0b11110, 0b10001, 0b11110, 0b10001, 0b10001, 0b10001, 0b11110},  // B
@@ -1221,8 +1221,9 @@ void swap(int* one, int* two) {
         {0b01110, 0b10001, 0b10001, 0b01110, 0b10001, 0b10001, 0b01110},  // 8
         {0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b00010, 0b01100},  // 9
   
-        {0b00000, 0b00000, 0b00100, 0b00000, 0b00000, 0b00100, 0b01000}  // ;
-  
+        {0b00000, 0b00000, 0b00100, 0b00000, 0b00000, 0b00100, 0b01000},  // ;
+        {0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01100, 0b01100},  // .
+        {0b00100, 0b01111, 0b10100, 0b01110, 0b00101, 0b11110, 0b00100}   // $
     };
   
     int index;
@@ -1239,6 +1240,9 @@ void swap(int* one, int* two) {
     else if (presentChar == ';') {
       index = 62;
     }
+    else if (presentChar == '.') index = 63;
+    else if (presentChar == '$') index = 64;
+
   
     else
       return;
