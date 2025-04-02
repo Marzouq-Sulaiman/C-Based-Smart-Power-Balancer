@@ -1091,6 +1091,12 @@ void swap(int* one, int* two) {
     *one = *two;
     *two = temp;
   }
+
+
+  void write_pixel_to_vga(int x, int y, uint16_t color) {
+    volatile short int *pixel_addr = (volatile short int *)(pixel_buffer_start + (y << 10) + (x << 1));
+    *pixel_addr = color;
+}
   
   void plot_pixel(int x, int y, short int line_color);
 
@@ -1154,7 +1160,7 @@ void swap(int* one, int* two) {
   }
   
   void drawChar(int x, int y, char presentChar, short int color) {
-    char fontMap[63][7] = {
+    char fontMap[66][7] = {
   
         {0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001},  // A
         {0b11110, 0b10001, 0b11110, 0b10001, 0b10001, 0b10001, 0b11110},  // B
@@ -1221,7 +1227,11 @@ void swap(int* one, int* two) {
         {0b01110, 0b10001, 0b10001, 0b01110, 0b10001, 0b10001, 0b01110},  // 8
         {0b01110, 0b10001, 0b10001, 0b01111, 0b00001, 0b00010, 0b01100},  // 9
   
-        {0b00000, 0b00000, 0b00100, 0b00000, 0b00000, 0b00100, 0b01000}  // ;
+        {0b00000, 0b00000, 0b00100, 0b00000, 0b00000, 0b00100, 0b01000},  // ;
+        {0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01100, 0b01100},  // .
+        {0b00100, 0b01111, 0b10100, 0b01110, 0b00101, 0b11110, 0b00100},   // $
+        {0b00000, 0b00100, 0b00100, 0b00000, 0b00100, 0b00100, 0b00000}
+
   
     };
   
@@ -1239,6 +1249,10 @@ void swap(int* one, int* two) {
     else if (presentChar == ';') {
       index = 62;
     }
+    else if (presentChar == '.') index = 63;
+    else if (presentChar == '$') index = 64;
+    else if (presentChar == ':') index = 65;
+
   
     else
       return;
@@ -1264,9 +1278,9 @@ void swap(int* one, int* two) {
     draw_box(220, 25, 80, 140, 0xA000);
   
     // drawText();
-    drawText("120V", 48, 15, 0xFFFF);
-    drawText("220V", 148, 15, 0xFFFF);
-    drawText("440V", 248, 15, 0xFFFF);
+    drawText("120V", 48, 15, 0xCC00);
+    drawText("220V", 148, 15, 0xCC00);
+    drawText("440V", 248, 15, 0xCC00);
   }
 
   void plot_pixel(int x, int y, short int line_color) {
@@ -1502,9 +1516,9 @@ void updateDisplayedCost() {
     buffer[5] = (decimal % 10) + '0';
     buffer[6] = '\0';
 
-    drawText("Cost: ", 100, 220, 0xFFFF);
+    drawText("Cost: $", 120, 230, 0xFFE0); 
     draw_box(160,220,40,10,0x0000);
-    drawText(buffer, 160, 220, 0xFFFF);
+    drawText(buffer, 165, 230, 0xFFE0);
 }
 
 void updateDisplayedPavg() {
