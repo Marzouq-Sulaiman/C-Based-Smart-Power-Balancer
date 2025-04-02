@@ -1296,6 +1296,18 @@ void swap(int* one, int* two) {
     drawText("220V", 148, 15, 0xCC00);
     drawText("440V", 248, 15, 0xCC00);
 
+    drawText("Dev. 1", 25, 45, 0xFFE0);
+    drawText("Dev. 2", 25, 95, 0xFFE0);
+    drawText("Dev. 3", 25, 135, 0xFFE0);
+
+    drawText("Dev. 4", 125, 45, 0xFFE0);
+    drawText("Dev. 5", 125, 95, 0xFFE0);
+    drawText("Dev. 6", 125, 135, 0xFFE0);
+
+    drawText("Dev. 7", 225, 45, 0xFFE0);
+    drawText("Dev. 8", 225, 95, 0xFFE0);
+    drawText("Dev. 9", 225, 135, 0xFFE0);
+
     //drawImageAt(0, 0);              // top-left
     //drawImageAt(256, 176);          // bottom-right (320 - 64, 240 - 64)
     //drawImageAt(128, 88);           // center-ish
