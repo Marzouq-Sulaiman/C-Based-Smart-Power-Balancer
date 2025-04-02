@@ -1063,10 +1063,10 @@ static unsigned int accumulated_time = 0;
 static unsigned int sw0_start_time = 0;
 static int sw0_prev_state = 0;
 
-// Function to get current time in milliseconds (implement this based on your system)
+
 unsigned int get_current_time() {
     // Example: return a timer value that increments every millisecond
-    return *((volatile unsigned int*)0xFF200000); // Replace with your timer's address
+    return *((volatile unsigned int*)0xFF200000); 
 }
 
 //variables from merged code
@@ -1483,6 +1483,27 @@ void updateDisplayedCurrent() {
 
 float totalCost = 0;
 
+void updateDisplayedCost() {
+    char buffer[7];  // Format: "123.45" + '\0'
+
+    if (totalCost < 0) totalCost = 0;
+    if (totalCost > 999.99) totalCost = 999.99;
+
+    int whole = (int) totalCost;
+    int decimal = (int)((totalCost - whole) * 100 + 0.5f);  // 2 decimal digits
+
+    buffer[0] = (whole / 100) + '0';
+    buffer[1] = ((whole / 10) % 10) + '0';
+    buffer[2] = (whole % 10) + '0';
+    buffer[3] = '.';
+    buffer[4] = (decimal / 10) + '0';
+    buffer[5] = (decimal % 10) + '0';
+    buffer[6] = '\0';
+
+    drawText("Cost: ", 100, 220, 0xFFFF);
+    drawText(buffer, 160, 220, 0xFFFF);
+}
+
 void updateDisplayedPavg() {
    
     //holds Pavg for each power group    
@@ -1660,6 +1681,7 @@ int main(void) {
 
             updateDisplayedCurrent();
             updateDisplayedPavg();
+            updateDisplayedCost();
         }
         else if (commercialVoltage* (currents[3]*SW_on_off[3] + currents[4]*SW_on_off[4] + currents[5]*SW_on_off[5]) > commercialPowerLimit){
             draw_box(10, 25, 300, 140, 0xFFFF);
