@@ -67,9 +67,9 @@ const uint16_t bitmap_data[BITMAP_WIDTH * BITMAP_HEIGHT] = {
 int pixel_buffer_start;
 int activeKEY;
 
-residentialVoltage = 110;
-commercialVoltage = 220;
-industrialVoltage = 440;
+int residentialVoltage = 120;
+int commercialVoltage = 220;
+int industrialVoltage = 440;
 
 double residentialPowerLimit = 1440;
 double commercialPowerLimit = 2400;
@@ -78,7 +78,7 @@ double industrialPowerLimit = 6200;
 //variable to store previous current value writes to VGA screen, needed to prevent pixel overwriting
 
 char oldVals [9][3];
-char oldPowerVals[3][4];
+char oldPowerVals[3][5];
 
 void swap(int* one, int* two) {
     int temp = *one;
@@ -258,7 +258,7 @@ void swap(int* one, int* two) {
     draw_box(220, 25, 80, 140, 0xF81F);
   
     // drawText();
-    drawText("110V", 48, 15, 0xFFFF);
+    drawText("120V", 48, 15, 0xFFFF);
     drawText("220V", 148, 15, 0xFFFF);
     drawText("440V", 248, 15, 0xFFFF);
   }
@@ -483,19 +483,25 @@ void updateDisplayedCurrent() {
 void updateDisplayedPavg() {
    
     //holds Pavg for each power group    
-    int powers [3] = {((currents[0] + currents[1] + currents[2])* 120) / 3, ((currents[3] + currents[4] + currents[5]) * 120) / 3, ((currents[6] + currents[7] + currents[8]) * 120) / 3};
+    int powers [3] = {((currents[0] + currents[1] + currents[2])* residentialVoltage) / 3, ((currents[3] + currents[4] + currents[5]) * commercialVoltage) / 3, ((currents[6] + currents[7] + currents[8]) * industrialVoltage) / 3};
     
-        char powerBuffers[3][4];          
+        char powerBuffers[3][5];          
     
         for (int i = 0; i < 3; i++) {
             int val = powers[i];
             if (val < 0) val = 0;
-            if (val > 999) val = 999;
+            if (val > 9999) val = 9999;
     
-            powerBuffers[i][0] = (val / 100) + '0';
-            powerBuffers[i][1] = ((val / 10) % 10) + '0';
-            powerBuffers[i][2] = (val % 10) + '0';
-            powerBuffers[i][3] = '\0';
+            // powerBuffers[i][0] = (val / 100) + '0';
+            // powerBuffers[i][1] = ((val / 10) % 10) + '0';
+            // powerBuffers[i][2] = (val % 10) + '0';
+            // powerBuffers[i][3] = '\0';
+
+            powerBuffers[i][0] = (val / 1000) + '0';
+            powerBuffers[i][1] = ((val / 100) % 10) + '0';
+            powerBuffers[i][2] = ((val / 10) % 10) + '0';
+            powerBuffers[i][3] = (val % 10) + '0';
+            powerBuffers[i][4] = '\0';
         }
     
             if (strcmp(oldPowerVals[0], powerBuffers[0]) != 0) {
