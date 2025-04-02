@@ -1165,7 +1165,7 @@ void swap(int* one, int* two) {
   }
   
   void drawChar(int x, int y, char presentChar, short int color) {
-    char fontMap[66][7] = {
+    char fontMap[70][7] = {
   
         {0b01110, 0b10001, 0b10001, 0b11111, 0b10001, 0b10001, 0b10001},  // A
         {0b11110, 0b10001, 0b11110, 0b10001, 0b10001, 0b10001, 0b11110},  // B
@@ -1234,8 +1234,14 @@ void swap(int* one, int* two) {
   
         {0b00000, 0b00000, 0b00100, 0b00000, 0b00000, 0b00100, 0b01000},  // ;
         {0b00000, 0b00000, 0b00000, 0b00000, 0b00000, 0b01100, 0b01100},  // .
-        {0b00100, 0b01111, 0b10100, 0b01110, 0b00101, 0b11110, 0b00100},   // $
-        {0b00000, 0b00100, 0b00100, 0b00000, 0b00100, 0b00100, 0b00000}
+        {0b00100, 0b01111, 0b10100, 0b01110, 0b00101, 0b11110, 0b00100},  // $
+        {0b00000, 0b00100, 0b00100, 0b00000, 0b00100, 0b00100, 0b00000},  // :
+        {0b01100, 0b00010, 0b00001, 0b00001, 0b00001, 0b00010, 0b01100},  // )  
+        {0b00110, 0b01000, 0b10000, 0b10000, 0b10000, 0b01000, 0b00110},   // (
+        {0b01100, 0b00010, 0b00001, 0b00001, 0b00001, 0b00010, 0b01100},  // ) 
+
+
+
 
   
     };
@@ -1257,6 +1263,9 @@ void swap(int* one, int* two) {
     else if (presentChar == '.') index = 63;
     else if (presentChar == '$') index = 64;
     else if (presentChar == ':') index = 65;
+    else if (presentChar == '(') index = 67;
+    else if (presentChar == ')') index = 69;
+
 
   
     else
@@ -1287,9 +1296,9 @@ void swap(int* one, int* two) {
     drawText("220V", 148, 15, 0xCC00);
     drawText("440V", 248, 15, 0xCC00);
 
-    drawImageAt(0, 0);              // top-left
-    drawImageAt(256, 176);          // bottom-right (320 - 64, 240 - 64)
-    drawImageAt(128, 88);           // center-ish
+    //drawImageAt(0, 0);              // top-left
+    //drawImageAt(256, 176);          // bottom-right (320 - 64, 240 - 64)
+    //drawImageAt(128, 88);           // center-ish
 
   }
 
@@ -1360,6 +1369,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[0], 70, 45, 0x001F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[0], buffers[0]);                 //store old value
                 drawText(buffers[0], 70, 45, 0xFFFF);           //draw new value
+                drawText(" A", 85, 45, 0xFFFF);
             }
             
         
@@ -1368,6 +1378,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[1], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[1], buffers[1]);                 //store old value
                 drawText(buffers[1], 70, 95, 0xFFFF);
+                drawText(" A", 85, 95, 0xFFFF);
             }
             
         
@@ -1376,6 +1387,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[2], 70, 135, 0x001F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[2], buffers[2]); 
                 drawText(buffers[2], 70, 135, 0xFFFF);
+                drawText(" A", 85, 135, 0xFFFF);
             }
 
         
@@ -1383,6 +1395,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[3], 170, 45, 0x0600);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[3], buffers[3]); 
                 drawText(buffers[3], 170, 45, 0xFFFF);
+                drawText(" A", 185, 45, 0xFFFF);
             }
         
         
@@ -1390,6 +1403,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[4], 170, 95, 0x0600);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[4], buffers[4]); 
                 drawText(buffers[4], 170, 95, 0xFFFF);
+                drawText(" A", 185, 95, 0xFFFF);
             }
 
         
@@ -1398,6 +1412,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[5], 170, 135, 0x0600);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[5], buffers[5]); 
                 drawText(buffers[5], 170, 135, 0xFFFF);
+                drawText(" A", 185, 135, 0xFFFF);
             }
 
         
@@ -1405,6 +1420,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[6], 270, 45, 0xA000);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[6], buffers[6]); 
                 drawText(buffers[6], 270, 45, 0xFFFF);
+                drawText(" A", 285, 45, 0xFFFF);
             }
 
         
@@ -1413,6 +1429,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[7], 270, 95, 0xA000);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[7], buffers[7]); 
                 drawText(buffers[7], 270, 95, 0xFFFF);
+                drawText(" A", 285, 95, 0xFFFF);
             }
 
         
@@ -1421,6 +1438,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[8], 270, 135, 0xA000);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[8], buffers[8]); 
                 drawText(buffers[8], 270, 135, 0xFFFF);
+                drawText(" A", 285, 135, 0xFFFF);
             }
 }
 
@@ -1478,8 +1496,8 @@ void updateDisplayedPavg() {
                 drawText(oldPowerVals[0], 40, 210, 0x0000);         // erase old
                 strcpy(oldPowerVals[0], powerBuffers[0]);       // update memory
                 drawText("Residential", 20, 170, 0xFFFF);
-                drawText("Avg Power", 20, 180, 0xFFFF);
-                drawText("Draw", 20, 190, 0xFFFF);
+                drawText("Avg. Power", 20, 180, 0xFFFF);
+                drawText("Draw (Watts)", 20, 190, 0xFFFF);
                 drawText(powerBuffers[0], 40, 210, 0xFFFF);         // draw new
             }
     
@@ -1487,8 +1505,8 @@ void updateDisplayedPavg() {
                 drawText(oldPowerVals[1], 140, 210, 0x0000);         // erase old
                 strcpy(oldPowerVals[1], powerBuffers[1]);       // update memory
                 drawText("Commercial", 120, 170, 0xFFFF);
-                drawText("Avg Power", 120, 180, 0xFFFF);
-                drawText("Draw", 120, 190, 0xFFFF);
+                drawText("Avg. Power", 120, 180, 0xFFFF);
+                drawText("Draw (Watts)", 120, 190, 0xFFFF);
                 drawText(powerBuffers[1], 140, 210, 0xFFFF);         // draw new
             }
     
@@ -1496,8 +1514,8 @@ void updateDisplayedPavg() {
                 drawText(oldPowerVals[2], 240, 210, 0x0000);         // erase old
                 strcpy(oldPowerVals[2], powerBuffers[2]);       // update memory
                 drawText("Residential", 220, 170, 0xFFFF);
-                drawText("Avg Power", 220, 180, 0xFFFF);
-                drawText("Draw", 220, 190, 0xFFFF);
+                drawText("Avg. Power", 220, 180, 0xFFFF);
+                drawText("Draw (Watts)", 220, 190, 0xFFFF);
                 drawText(powerBuffers[2], 240, 210, 0xFFFF);         // draw new
             }
     }
