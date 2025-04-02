@@ -1085,6 +1085,7 @@ double industrialPowerLimit = 6200;
 
 char oldVals [9][3];
 char oldPowerVals[3][5];
+char oldCost [7];
 
 void swap(int* one, int* two) {
     int temp = *one;
@@ -1459,7 +1460,7 @@ float totalCost = 0;
 void updateDisplayedCost() {
     
     char buffer[7];  // Format: "123.45" + '\0'
-    char oldVals[7];
+    //char oldVals[7];
 
     if (totalCost < 0) totalCost = 0;
     if (totalCost > 999.99) totalCost = 999.99;
@@ -1475,9 +1476,13 @@ void updateDisplayedCost() {
     buffer[5] = (decimal % 10) + '0';
     buffer[6] = '\0';
 
+
+    if (strcmp(oldCost, buffer) != 0) {
     drawText("Cost: $", 120, 230, 0xFFE0); 
     draw_box(160,230,40,10,0x0000);
+    strcpy(oldCost, buffer);       // update memory
     drawText(buffer, 165, 230, 0xFFE0);
+    }
 }
 
 void updateDisplayedPavg() {
@@ -1633,7 +1638,7 @@ int main(void) {
             draw_box(10, 25, 300, 140, 0xFFFF);
             drawText("MASTER CAUTION: Residential Power Limit Exceeded", 20, 60, 0x0000);
             drawText("Power Disconnected To Prevent Equipment Damage", 20, 80, 0x0000);
-            drawText("Resolve Issue Before Restarting System", 20, 100, 0x0000);
+            drawText("Disconnect Device Before Restarting System", 20, 100, 0x0000);
             play_audio(audio_samples, num_samples, 1, 1);
             while (residentialVoltage* (currents[0]*SW_on_off[0] + currents[1]*SW_on_off[1] + currents[2]*SW_on_off[2]) > residentialPowerLimit){
                 int sw_value = (*SW_ptr >> 1) & 0x3FF;  // Original mask preserved
@@ -1654,6 +1659,7 @@ int main(void) {
             // reset the old values so comparison works
             memset(oldVals, 0, sizeof(oldVals));
             memset(oldPowerVals, 0, sizeof(oldPowerVals));
+            memset(oldCost, 0, sizeof(oldCost));
 
             updateDisplayedCurrent();
             updateDisplayedPavg();
@@ -1663,7 +1669,7 @@ int main(void) {
             draw_box(10, 25, 300, 140, 0xFFFF);
             drawText("MASTER CAUTION: Commercial Power Limit Exceeded", 20, 60, 0x0000);
             drawText("Power Disconnected To Prevent Equipment Damage", 20, 80, 0x0000);
-            drawText("Resolve Issue Before Restarting System", 20, 100, 0x0000);
+            drawText("Disconnect Device Before Restarting System", 20, 100, 0x0000);
             play_audio(audio_samples, num_samples, 1, 1);
             while (commercialVoltage* (currents[3]*SW_on_off[3] + currents[4]*SW_on_off[4] + currents[5]*SW_on_off[5]) > commercialPowerLimit){
                 int sw_value = (*SW_ptr >> 1) & 0x3FF;  // Original mask preserved
@@ -1692,7 +1698,7 @@ int main(void) {
             draw_box(10, 25, 300, 140, 0xFFFF);
             drawText("MASTER CAUTION: Industrial Power Limit Exceeded", 20, 60, 0x0000);
             drawText("Power Disconnected To Prevent Equipment Damage", 20, 80, 0x0000);
-            drawText("Resolve Issue Before Restarting System", 20, 100, 0x0000);
+            drawText("Disconnect Device Before Restarting System", 20, 100, 0x0000);
             play_audio(audio_samples, num_samples, 1, 1);
             while (industrialVoltage* (currents[6]*SW_on_off[6] + currents[7]*SW_on_off[7] + currents[8]*SW_on_off[8]) > industrialPowerLimit){
                 int sw_value = (*SW_ptr >> 1) & 0x3FF;  // Original mask preserved
