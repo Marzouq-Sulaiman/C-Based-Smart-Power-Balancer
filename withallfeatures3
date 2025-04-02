@@ -415,6 +415,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[0], 70, 45, 0x001F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[0], buffers[0]);                 //store old value
                 drawText(buffers[0], 70, 45, 0xFFFF);           //draw new value
+                drawText(" A", 85, 45, 0xFFFF);
             }
             
         
@@ -423,21 +424,22 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[1], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[1], buffers[1]);                 //store old value
                 drawText(buffers[1], 70, 95, 0xFFFF);
+                drawText(" A", 85, 95, 0xFFFF);
             }
             
         
-       
             if (strcmp(oldVals[2], buffers[2]) != 0){       //remove this line if fails on de1 Soc due to string library usage
                 drawText(oldVals[2], 70, 135, 0x001F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[2], buffers[2]); 
                 drawText(buffers[2], 70, 135, 0xFFFF);
+                drawText(" A", 85, 135, 0xFFFF);
             }
 
-        
             if (strcmp(oldVals[3], buffers[3]) != 0){       //remove this line if fails on de1 Soc due to string library usage
                 drawText(oldVals[3], 170, 45, 0x07E0);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[3], buffers[3]); 
                 drawText(buffers[3], 170, 45, 0xFFFF);
+                drawText(" A", 185, 45, 0xFFFF);
             }
         
         
@@ -445,6 +447,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[4], 170, 95, 0x07E0);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[4], buffers[4]); 
                 drawText(buffers[4], 170, 95, 0xFFFF);
+                drawText(" A", 185, 95, 0xFFFF);
             }
 
         
@@ -453,6 +456,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[5], 170, 135, 0x07E0);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[5], buffers[5]); 
                 drawText(buffers[5], 170, 135, 0xFFFF);
+                drawText(" A", 185, 135, 0xFFFF);
             }
 
         
@@ -460,6 +464,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[6], 270, 45, 0xF81F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[6], buffers[6]); 
                 drawText(buffers[6], 270, 45, 0xFFFF);
+                drawText(" A", 285, 45, 0xFFFF);
             }
 
         
@@ -468,6 +473,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[7], 270, 95, 0xF81F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[7], buffers[7]); 
                 drawText(buffers[7], 270, 95, 0xFFFF);
+                drawText(" A", 285, 95, 0xFFFF);
             }
 
         
@@ -476,6 +482,7 @@ void updateDisplayedCurrent() {
                 drawText(oldVals[8], 270, 135, 0xF81F);       //clear old value to avoid overwriting pixels
                 strcpy(oldVals[8], buffers[8]); 
                 drawText(buffers[8], 270, 135, 0xFFFF);
+                drawText(" A", 285, 135, 0xFFFF);
             }
 }
 
