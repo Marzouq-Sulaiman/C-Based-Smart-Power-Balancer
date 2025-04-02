@@ -78,6 +78,7 @@ double industrialPowerLimit = 6200;
 //variable to store previous current value writes to VGA screen, needed to prevent pixel overwriting
 
 char oldVals [9][3];
+char oldPowerVals[3][4];
 
 void swap(int* one, int* two) {
     int temp = *one;
@@ -315,86 +316,52 @@ const int SW_codes[10] = {  // Bitmasks for up to 9 devices (LEDs 0-8)
 int totalPower = 0;
 int power[9] = {0};
 
-// void updateDisplayedCurrent() {
 
-//     char buffers[9][3];  
+void updateDisplayedPavg() {
+   
+//holds Pavg for each power group    
+int powers [3] = {((currents[0] + currents[1] + currents[2])* 120) / 3, ((currents[3] + currents[4] + currents[5]) * 120) / 3, ((currents[6] + currents[7] + currents[8]) * 120) / 3};
 
-//     for (int i = 0; i < 9; i++) {
-//         buffers[i][0] = (currents[i] / 10) + '0'; 
-//         buffers[i][1] = (currents[i] % 10) + '0'; 
-//         buffers[i][2] = '\0';                      
-//     }
+    char powerBuffers[3][4];          
 
-//     if (current_mode.mode_code == 0){
-//         if (selected_device == 0){
-//             if (strcmp(oldVals[0], buffers[0]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[0], 70, 45, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[0], buffers[0]);                 //store old value
-//             drawText(buffers[0], 70, 45, 0xFFFF);           //draw new value
-//         }
-//         else if (selected_device == 1){
-//             if (strcmp(oldVals[1], buffers[1]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[1], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[1], buffers[1]);                 //store old value
-//             drawText(buffers[1], 70, 95, 0xFFFF);
-//         }
-//         else if (selected_device == 2){
-//             if (strcmp(oldVals[2], buffers[2]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[2], 70, 135, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[2], buffers[2]); 
-//             drawText(buffers[2], 70, 135, 0xFFFF);
-//         }
-//     }
-//     else if (current_mode.mode_code == 1){
-//         if (selected_device == 3){
-//             if (strcmp(oldVals[3], buffers[3]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[3], 70, 170, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[3], buffers[3]); 
-//             drawText(buffers[3], 170, 45, 0xFFFF);
-//         }
-//         else if (selected_device == 4){
-//             if (strcmp(oldVals[4], buffers[4]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[4], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[4], buffers[4]); 
-//             drawText(buffers[4], 170, 95, 0xFFFF);
-//         }
-//         else if (selected_device == 5){
-//             if (strcmp(oldVals[5], buffers[5]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[5], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[5], buffers[5]); 
-//             drawText(buffers[5], 170, 135, 0xFFFF);
-//         }
-//     }
-//     else if (current_mode.mode_code == 2){
-//         if (selected_device == 6){
-//             if (strcmp(oldVals[6], buffers[6]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[6], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[6], buffers[6]); 
-//             drawText(buffers[6], 270, 45, 0xFFFF);
-//         }
-//         else if (selected_device == 7){
-//             if (strcmp(oldVals[7], buffers[7]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[7], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[7], buffers[7]); 
-//             drawText(buffers[7], 270, 95, 0xFFFF);
-//         }
-//         else if (selected_device == 8){
-//             if (strcmp(oldVals[8], buffers[8]) != 0){       //remove this line if fails on de1 Soc due to string library usage
-//                 drawText(oldVals[8], 70, 95, 0x001F);       //clear old value to avoid overwriting pixels
-//             }
-//             strcpy(oldVals[8], buffers[8]); 
-//             drawText(buffers[8], 270, 135, 0xFFFF);
-//         }
-//     }
-// }
+    for (int i = 0; i < 3; i++) {
+        int val = powers[i];
+        if (val < 0) val = 0;
+        if (val > 999) val = 999;
+
+        powerBuffers[i][0] = (val / 100) + '0';
+        powerBuffers[i][1] = ((val / 10) % 10) + '0';
+        powerBuffers[i][2] = (val % 10) + '0';
+        powerBuffers[i][3] = '\0';
+    }
+
+        if (strcmp(oldPowerVals[0], powerBuffers[0]) != 0) {
+            drawText(oldPowerVals[0], 40, 210, 0x0000);         // erase old
+            strcpy(oldPowerVals[0], powerBuffers[0]);       // update memory
+            drawText("Residential", 20, 170, 0xFFFF);
+            drawText("Avg Power", 20, 180, 0xFFFF);
+            drawText("Draw", 20, 190, 0xFFFF);
+            drawText(powerBuffers[0], 40, 210, 0xFFFF);         // draw new
+        }
+
+        if (strcmp(oldPowerVals[1], powerBuffers[1]) != 0) {
+            drawText(oldPowerVals[1], 40, 210, 0x0000);         // erase old
+            strcpy(oldPowerVals[1], powerBuffers[1]);       // update memory
+            drawText("Commercial", 120, 170, 0xFFFF);
+            drawText("Avg Power", 120, 180, 0xFFFF);
+            drawText("Draw", 120, 190, 0xFFFF);
+            drawText(powerBuffers[1], 140, 210, 0xFFFF);         // draw new
+        }
+
+        if (strcmp(oldPowerVals[2], powerBuffers[2]) != 0) {
+            drawText(oldPowerVals[2], 240, 210, 0x0000);         // erase old
+            strcpy(oldPowerVals[2], powerBuffers[2]);       // update memory
+            drawText("Residential", 220, 170, 0xFFFF);
+            drawText("Avg Power", 220, 180, 0xFFFF);
+            drawText("Draw", 220, 190, 0xFFFF);
+            drawText(powerBuffers[2], 240, 210, 0xFFFF);         // draw new
+        }
+}
 
 void updateDisplayedCurrent() {
 
@@ -474,42 +441,6 @@ void updateDisplayedCurrent() {
             }
 }
 
-
-
-void updateDisplayedPavg(){
-
-    double residentialAvgPowDraw = ((currents[0] + currents[1] + currents[2]) * 110) / 3;
-    double commercialAvgPowDraw = ((currents[3] + currents[4] + currents[5]) * 220) / 3;
-    double industrialAvgPowDraw = ((currents[6] + currents[7] + currents[8]) * 440) / 3;
-
-    double avgPowerValues [3] = {residentialAvgPowDraw, commercialAvgPowDraw, industrialAvgPowDraw};  
-
-    char powerValBuffer[3][4];  
-
-    // for (int i = 0; i < 3; i++) {
-    //     powerValBuffer[i][0] = ((int)avgPowerValues[i] / 10) + '0'; 
-    //     powerValBuffer[i][1] = ((int)avgPowerValues[i] % 10) + '0'; 
-    //     powerValBuffer[i][2] = '\0';                      
-    // }
-
-    for (int i = 0; i < 3; i++) {
-        int value = (int) avgPowerValues[i];
-
-         if (value < 0) value = 0;
-         if (value > 999) value = 999;
-
-        powerValBuffer[i][0] = (value / 100) + '0';         
-        powerValBuffer[i][1] = ((value / 10) % 10) + '0';  
-        powerValBuffer[i][2] = (value % 10) + '0';         
-        powerValBuffer[i][3] = '\0';                       
-    }
-
-    drawText("Average Power Draw (W)", 20, 350, 0xFFFF);
-    drawText(powerValBuffer[0], 55, 350, 0xFFFF);
-}
-
-
-
 /*******************************************************************************
  * Main program: Handles device selection and current input via PS/2 keyboard
  ******************************************************************************/
@@ -579,31 +510,12 @@ int main(void) {
     }
 
     while (1) {
-        PS2_data = *PS2_ptr;               // Read PS/2 data
-        RVALID = (PS2_data & 0x8000);      // Extract valid bit
-        if (RVALID) {
-            int data_byte = PS2_data & 0xFF;  // Extract scancode byte
+
+        
+        //START MERGED
+        if (currents){
             
-            if (ignore_next) {              // Skip break code
-                ignore_next = 0;
-                continue;
-            }
-            
-            if (data_byte == 0xF0) {        // Break code detected
-                ignore_next = 1;           // Skip next byte (key release)
-            } 
-            else if (data_byte == 0x5A) {  // Enter key pressed (make code)
-                break;                      // Exit loop when Enter is pressed
-            }
         }
-    }
-
-    clear_screen();
-
-    setupVGA();
-
-    while (1) {
-
         if (residentialVoltage* (currents[0]*SW_on_off[0] + currents[1]*SW_on_off[1] + currents[2]*SW_on_off[2]) > residentialPowerLimit){
             draw_box(20, 25, 300, 140, 0xFFFF);
             drawText("MASTER CAUTION: Residential Power Limit Exceeded", 120, 120, 0x0000);
@@ -616,7 +528,7 @@ int main(void) {
             drawText("Power Disconnected To Prevent Equipment Damage", 120, 140, 0x0000);
             drawText("Resolve Issue Before Restarting System", 120, 160, 0x0000);
         }
-        else if (industrialVoltage* (currents[6]*SW_on_off[6] + currents[7]*SW_on_off[7] + currents[8]*SW_on_off[8]) > industrialPowerLimit){
+        else if (industrialVoltage* (currents[6] + currents[7] + currents[8]) > industrialPowerLimit){
             draw_box(20, 25, 300, 140, 0xFFFF);
             drawText("MASTER CAUTION: Industrial Power Limit Exceeded", 120, 120, 0x0000);
             drawText("Power Disconnected To Prevent Equipment Damage", 120, 140, 0x0000);
@@ -866,6 +778,7 @@ int main(void) {
                             char first = digit_count > 1 ? digit_buffer[0] : 0;
                             char second = digit_buffer[digit_count-1];
                             update_display(selected_device, first, second);
+                            updateDisplayedPavg();
                         }
                     }
                 }
