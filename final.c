@@ -1264,7 +1264,7 @@ void swap(int* one, int* two) {
     else if (presentChar == '$') index = 64;
     else if (presentChar == ':') index = 65;
     else if (presentChar == '(') index = 67;
-    else if (presentChar == ')') index = 69;
+    else if (presentChar == ')') index = 68;
 
 
   
