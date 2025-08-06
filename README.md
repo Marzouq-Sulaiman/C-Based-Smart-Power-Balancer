@@ -1,4 +1,4 @@
-> ## C-Based-Smart-Power-Balancer
+> #### C-Based-Smart-Power-Balancer
 
 >> ***Disclaimer: Code is only for documentation/interfacing with the application. Please do not copy and paste or otherwise use this code for any academic credit anywhere; doing so will violate academic integrity policies at the University of Toronto (and it''s very easy to find out!)***
 
